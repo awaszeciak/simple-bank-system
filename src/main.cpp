@@ -2,22 +2,32 @@
 #include "../include/domain/Customer.h"
 #include "../include/domain/Account.h"
 #include "../include/domain/Transaction.h"
+#include "../include/repository/CustomerRepository.h"
 
 int main() {
+    
+    CustomerRepository customerRepository;
 
-    Customer customer(1, "Anna", "Nowak", "annanowak@gmail.com");
-    Account account("PL61109010140000071219812874", customer.getId(), 500.0);
+    Customer customer1(1, "Anna", "Nowak", "annanowak@example.com");
+    Customer customer2(2, "Jan", "Kowalski", "jankowalski@example.com");
 
-    Transaction transaction(1, account.getAccountNumber(), "DEPOSIT", 250.0, "Initial deposit");
+    customerRepository.addCustomer(customer1);
+    customerRepository.addCustomer(customer2);
 
-    std::cout << "Simple Bank System started successfully." << std::endl;
+    std::optional<Customer> foundCustomer = customerRepository.findById(1);
 
+    if (foundCustomer.has_value()) {
+        std::cout << "Found customer: " << foundCustomer->getFullName() << std::endl;
+    }
+    else {
+        std::cout << "Customer not found" << std::endl;
+    }
 
-    std::cout << "Customer: " << customer.getFullName() << std::endl;
-    std::cout << "Account number: " << account.getAccountNumber() << std::endl;
-    std::cout << "Balance: " << account.getBalance() << " PLN" << std::endl;
+    std::cout << "All customers:" << std::endl;
 
-    std::cout << "Transaction type: " << transaction.getType() << std::endl;
-    std::cout << "Transaction amount: " << transaction.getAmount() << " PLN" << std::endl;
+    for (const Customer& customer : customerRepository.getAllCustomers()) {
+        std::cout << " - " << customer.getFullName() << std::endl;
+    }
+
     return 0;
 }
