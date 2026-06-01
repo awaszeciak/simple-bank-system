@@ -118,5 +118,25 @@ int main() {
         }
     }
 
+    std::cout << "\nTesting transfer:" << std::endl;
+
+    if (bankService.transfer("PL61109010140000071219812874", "PL27114020040000300201355387", 100.0)) {
+        std::cout << "Transfer accepted" << std::endl;
+    } else {
+        std::cout << "Transfer rejected" << std::endl;
+    }
+
+    if (bankService.transfer("PL61109010140000071219812874", "PL27114020040000300201355387", 10000.0)) {
+        std::cout << "Transfer accepted" << std::endl;
+    } else {
+        std::cout << "Transfer rejected" << std::endl;
+    }
+
+    if (bankService.transfer("PL61109010140000071219812874", "PL61109010140000071219812874", 50.0)) {
+        std::cout << "Transfer accepted" << std::endl;
+    } else {
+        std::cout << "Transfer rejected" << std::endl;
+    }
+
     return 0;
 }

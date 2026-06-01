@@ -65,6 +65,52 @@ bool BankService::withdraw(const std::string& accountNumber, double amount) {
     return true;
 }
 
+bool BankService::transfer(const std::string& sourceAccountNumber, const std::string& targetAccountNumber, double amount) {
+    if (amount <= 0) {
+        return false;
+    }
+
+    if (sourceAccountNumber == targetAccountNumber) {
+        return false;
+    }
+
+    std::optional<Account> sourceAccount = accountRepository.findByAccountNumber(sourceAccountNumber);
+    std::optional<Account> targetAccount = accountRepository.findByAccountNumber(targetAccountNumber);
+
+    if (!sourceAccount.has_value() || !targetAccount.has_value()) {
+        return false;
+    }
+
+    Account updatedSourceAccount = sourceAccount.value();
+    Account updatedTargetAccount = targetAccount.value();
+
+    if (!updatedSourceAccount.withdraw(amount)) {
+        return false;
+    }
+
+    if (!updatedTargetAccount.withdraw(amount)) {
+        return false;
+    }
+
+    if (!accountRepository.updateAccount(updatedSourceAccount)) {
+        return false;
+    }
+
+    if (!accountRepository.updateAccount(updatedTargetAccount)) {
+        return false;
+    }
+
+    Transaction outgoingTransaction(nextTransactionId++, sourceAccountNumber, "TRANSFER_OUT", amount, "Money transferred to account " + targetAccountNumber);
+    Transaction incomingTransaction(nextTransactionId++, targetAccountNumber, "TRANSFER_IN", amount, "Money received from account " + sourceAccountNumber);
+    
+    transactionRepository.addTransaction(outgoingTransaction);
+    transactionRepository.addTransaction(incomingTransaction);
+
+    return true;
+
+}
+
+
 std::optional<Customer> BankService::findCustomerById(int id) const {
     return customerRepository.findById(id);
 }

@@ -31,6 +31,8 @@ class BankService {
 
         std::optional<Customer> findCustomerById(int id) const;
         std::optional<Account> findAccountByNumber(const std::string& accountNumber) const;
+
+        bool transfer(const std::string& sourceAccountNumber, const std::string& targetAccountNumber, double amount);
 };
 
 #endif
