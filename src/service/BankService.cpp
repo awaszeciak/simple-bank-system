@@ -1,10 +1,13 @@
 #include "../../include/service/BankService.h"
 
 BankService::BankService(CustomerRepository& customerRepository, AccountRepository& accountRepository, TransactionRepository& transactionRepository)
-    : customerRepository(customerRepository), accountRepository(accountRepository), transactionRepository(transactionRepository), nextTransactionId(1) {}
+    : customerRepository(customerRepository), accountRepository(accountRepository), transactionRepository(transactionRepository), nextTransactionId(1), nextCustomerId(1) {}
 
-bool BankService::createCustomer(const Customer& customer) {
-    return customerRepository.addCustomer(customer);
+Customer BankService::createCustomer(const std::string& firstName, const std::string& lastName, const std::string &email) {
+    Customer customer(nextCustomerId++, firstName, lastName, email);
+    customerRepository.addCustomer(customer);
+
+    return customer;
 }
 
 bool BankService::createAccount(const Account& account) {

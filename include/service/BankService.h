@@ -17,11 +17,12 @@ class BankService {
         AccountRepository& accountRepository;
         TransactionRepository& transactionRepository;
         int nextTransactionId;
+        int nextCustomerId;
 
     public:
         BankService(CustomerRepository& customerRepository, AccountRepository& accountRepository, TransactionRepository& transactionRepository);
 
-        bool createCustomer(const Customer& customer);
+        Customer createCustomer(const std::string& firstName, const std::string& lastName, const std::string& email);
         bool createAccount(const Account& account);
 
         std::vector<Transaction> getTransactionsForAccount(const std::string& accountNumber) const;

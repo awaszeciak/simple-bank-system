@@ -1,0 +1,208 @@
+#include "../../include/ui/ConsoleUI.h"
+
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include "../../include/domain/Customer.h"
+#include "../../include/domain/Account.h"
+#include "../../include/domain/Transaction.h"
+
+ConsoleUI::ConsoleUI(BankService& bankService) 
+    : bankService(bankService) {}
+
+void ConsoleUI::showMenu() const {
+    std::cout << "\n==== Simple Bank System ====\n";
+    std::cout << "1. Create customer\n";
+    std::cout << "2. Create account\n";
+    std::cout << "3. Deposit money\n";
+    std::cout << "4. Withdraw money\n";
+    std::cout << "5. Transfer money\n";
+    std::cout << "6. Show account info\n";
+    std::cout << "7. Show transaction history\n";
+    std::cout << "0. Exit\n";
+    std::cout << "Choose option: ";
+}
+
+void ConsoleUI::run() {
+    int option;
+
+    do {
+        showMenu();
+        std::cin >> option;
+
+        switch (option) {
+            case 1:
+                createCustomer();
+                break;
+            case 2:
+                createAccount();
+                break;
+            case 3:
+                depositMoney();
+                break;
+            case 4:
+                withdrawMoney();
+                break;
+            case 5:
+                transferMoney();
+                break;
+            case 6:
+                showAccountInfo();
+                break;
+            case 7:
+                showTransactionHistory();
+                break;
+            case 0:
+                std::cout << "Exiting application\n";
+                break;
+            default:
+                std::cout << "Invalid option\n";
+        }
+
+    } while (option != 0);
+}
+
+
+void ConsoleUI::createCustomer() {
+    std::string firstName;
+    std::string lastName;
+    std::string email;
+
+    std::cout << "First name: ";
+    std::cin >> firstName;
+
+    std::cout << "Last name: ";
+    std::cin >> lastName;
+
+    std::cout << "Email: ";
+    std::cin >> email;
+
+    Customer customer = bankService.createCustomer(firstName, lastName, email);
+
+    std::cout << "Customer created successfully\n";
+}
+
+
+void ConsoleUI::createAccount() {
+    
+    std::string accountNumber;
+    int customerId;
+    double initialBalance;
+    
+    std::cout << "Account number: ";
+    std::cin >> accountNumber;
+
+    std::cout << "Customer ID: ";
+    std::cin >> customerId;
+
+    std::cout << "Initial balance: ";
+    std::cin >> initialBalance;
+
+    Account account(accountNumber, customerId, initialBalance);
+
+    if (bankService.createAccount(account)) {
+        std::cout << "Account created successfully\n";
+    } else {
+        std::cout << "Could not create account. Customer may not exist or account number is duplicated.\n";
+    }
+}
+
+
+void ConsoleUI::depositMoney() {
+    std::string accountNumber;
+    double amount;
+
+    std::cout << "Account number: ";
+    std::cin >> accountNumber;
+
+    std::cout << "Amount: ";
+    std::cin >> amount;
+
+    if (bankService.deposit(accountNumber, amount)) {
+        std::cout << "Deposit completed successfully\n";
+    } else {
+        std::cout << "Deposit rejected\n";
+    }
+}
+
+
+void ConsoleUI::withdrawMoney() {
+    std::string accountNumber;
+    double amount;
+
+    std::cout << "Account number: ";
+    std::cin >> accountNumber;
+
+    std::cout << "Amount: ";
+    std::cin >> amount;
+
+    if (bankService.withdraw(accountNumber, amount)) {
+        std::cout << "Withdrawal completed successfully\n";
+    } else {
+        std::cout << "Withdrawal rejected\n";
+    }
+}
+
+
+
+void ConsoleUI::transferMoney() {
+    std::string sourceAccountNumber;
+    std::string targetAccountNumber;
+    double amount;
+
+    std::cout << "Source account number: ";
+    std::cin >> sourceAccountNumber;
+
+    std::cout << "Target account number: ";
+    std::cin >> targetAccountNumber;
+
+    std::cout << "Amount: ";
+    std::cin >> amount;
+
+    if (bankService.transfer(sourceAccountNumber, targetAccountNumber, amount)) {
+        std::cout << "Transfer completed successfully\n";
+    } else {
+        std::cout << "Transfer rejected\n";
+    }
+}
+
+
+void ConsoleUI::showAccountInfo() const {
+    std::string accountNumber;
+
+    std::cout << "Account number: ";
+    std::cin >> accountNumber;
+
+    std::optional<Account> account = bankService.findAccountByNumber(accountNumber);
+
+    if (!account.has_value()) {
+        std::cout << "Account not found\n";
+        return;
+    }
+    
+    std::cout << "\nAccount number: " << account->getAccountNumber() << "\n";
+    std::cout << "Customer ID: " << account->getCustomerId() << "\n";
+    std::cout << "Balance: " << account->getBalance() << " PLN\n";
+}
+
+
+void ConsoleUI::showTransactionHistory() const {
+    std::string accountNumber;
+
+    std::cout << "Account number: ";
+    std::cin >> accountNumber;
+
+    std::vector<Transaction> transactions = bankService.getTransactionsForAccount(accountNumber);
+
+    if (transactions.empty()) {
+        std::cout << "No transactions found\n";
+        return;
+    }
+
+    std::cout << "\nTransaction history:\n";
+
+    for (const Transaction& transaction : transactions) {
+        std::cout << " - ID: " << transaction.getId() << ", Type: " << transaction.getType() << ", Amount: " << transaction.getAmount() << ", Description: " << transaction.getDescription() << "\n";
+    }
+}
