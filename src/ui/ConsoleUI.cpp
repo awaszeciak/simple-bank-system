@@ -98,10 +98,15 @@ void ConsoleUI::createCustomer() {
         return;
     }
 
-    Customer customer = bankService.createCustomer(firstName, lastName, email);
+    try {
+        Customer customer = bankService.createCustomer(firstName, lastName, email);
+        std:: cout << "Customer created successfully. ID: " << customer.getId() << "\n";
+    } catch (const std::exception& exception) {
+        std::cout << "Error: " << exception.what() << "\n";
+    }
 
-    std::cout << "Customer created successfully\n";
-    std::cout << "Assigned customer ID: " << customer.getId() << "\n";
+
+
 }
 
 void ConsoleUI::createAccount() {

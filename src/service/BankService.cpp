@@ -1,12 +1,20 @@
 #include "../../include/service/BankService.h"
 #include <random>
+#include <stdexcept>
 
 BankService::BankService(ICustomerRepository& customerRepository, IAccountRepository& accountRepository, ITransactionRepository& transactionRepository)
     : customerRepository(customerRepository), accountRepository(accountRepository), transactionRepository(transactionRepository), nextTransactionId(1), nextCustomerId(1) {}
 
 Customer BankService::createCustomer(const std::string& firstName, const std::string& lastName, const std::string &email) {
+    if (customerRepository.findByEmail(email).has_value()) {
+        throw std::invalid_argument("Customer with this email already exists");
+    }
+    
     Customer customer(nextCustomerId++, firstName, lastName, email);
-    customerRepository.addCustomer(customer);
+
+    if (!customerRepository.addCustomer(customer)) {
+        throw std::runtime_error("Failed to add customer");
+    }
 
     return customer;
 }
