@@ -19,11 +19,13 @@ class BankService {
         int nextTransactionId;
         int nextCustomerId;
 
+        std::string generateAccountNumber();
+
     public:
         BankService(CustomerRepository& customerRepository, AccountRepository& accountRepository, TransactionRepository& transactionRepository);
 
         Customer createCustomer(const std::string& firstName, const std::string& lastName, const std::string& email);
-        bool createAccount(const Account& account);
+        std::optional<Account> createAccount(int customerId, double initialBalance);
 
         std::vector<Transaction> getTransactionsForAccount(const std::string& accountNumber) const;
 
@@ -34,6 +36,8 @@ class BankService {
         std::optional<Account> findAccountByNumber(const std::string& accountNumber) const;
 
         bool transfer(const std::string& sourceAccountNumber, const std::string& targetAccountNumber, double amount);
+
+        std::vector<Customer> getAllCustomers() const;
 };
 
 #endif

@@ -16,6 +16,7 @@ class ConsoleUI {
         void transferMoney();
         void showAccountInfo() const;
         void showTransactionHistory() const;
+        void showAllCustomers() const;
 
     public:
         explicit ConsoleUI(BankService& bankService);

@@ -1,6 +1,7 @@
 #include "../../include/ui/ConsoleUI.h"
 
 #include <iostream>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -20,6 +21,7 @@ void ConsoleUI::showMenu() const {
     std::cout << "5. Transfer money\n";
     std::cout << "6. Show account info\n";
     std::cout << "7. Show transaction history\n";
+    std::cout << "8. Show all customers\n";
     std::cout << "0. Exit\n";
     std::cout << "Choose option: ";
 }
@@ -53,6 +55,9 @@ void ConsoleUI::run() {
             case 7:
                 showTransactionHistory();
                 break;
+            case 8:
+                showAllCustomers();
+                break;
             case 0:
                 std::cout << "Exiting application\n";
                 break;
@@ -81,17 +86,14 @@ void ConsoleUI::createCustomer() {
     Customer customer = bankService.createCustomer(firstName, lastName, email);
 
     std::cout << "Customer created successfully\n";
+    std::cout << "Assigned customer ID: " << customer.getId() << "\n";
 }
 
 
 void ConsoleUI::createAccount() {
     
-    std::string accountNumber;
     int customerId;
     double initialBalance;
-    
-    std::cout << "Account number: ";
-    std::cin >> accountNumber;
 
     std::cout << "Customer ID: ";
     std::cin >> customerId;
@@ -99,12 +101,14 @@ void ConsoleUI::createAccount() {
     std::cout << "Initial balance: ";
     std::cin >> initialBalance;
 
-    Account account(accountNumber, customerId, initialBalance);
+    std::optional<Account> account = bankService.createAccount(customerId, initialBalance);
 
-    if (bankService.createAccount(account)) {
+    if (account.has_value()) {
         std::cout << "Account created successfully\n";
+        std::cout << "Assigned account number: " << account->getAccountNumber() << "\n";
+        std::cout << "Initial balance: " << account->getBalance() << " PLN\n";
     } else {
-        std::cout << "Could not create account. Customer may not exist or account number is duplicated.\n";
+        std::cout << "Account creation failed. Customer does not exist or initial balance is invalid\n";
     }
 }
 
@@ -204,5 +208,20 @@ void ConsoleUI::showTransactionHistory() const {
 
     for (const Transaction& transaction : transactions) {
         std::cout << " - ID: " << transaction.getId() << ", Type: " << transaction.getType() << ", Amount: " << transaction.getAmount() << ", Description: " << transaction.getDescription() << "\n";
+    }
+}
+
+void ConsoleUI::showAllCustomers() const {
+    std::vector<Customer> customers = bankService.getAllCustomers();
+
+    if (customers.empty()) {
+        std::cout << "No customers found\n";
+        return;
+    }
+
+    std::cout << "\nCustomers:\n";
+
+    for (const Customer& customer: customers) {
+        std::cout << " - ID: " << customer.getId() << ", Name: " << customer.getFullName() << ", Email: " << customer.getEmail() << "\n";
     }
 }

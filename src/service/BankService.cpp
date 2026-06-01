@@ -1,4 +1,5 @@
 #include "../../include/service/BankService.h"
+#include <random>
 
 BankService::BankService(CustomerRepository& customerRepository, AccountRepository& accountRepository, TransactionRepository& transactionRepository)
     : customerRepository(customerRepository), accountRepository(accountRepository), transactionRepository(transactionRepository), nextTransactionId(1), nextCustomerId(1) {}
@@ -10,15 +11,42 @@ Customer BankService::createCustomer(const std::string& firstName, const std::st
     return customer;
 }
 
-bool BankService::createAccount(const Account& account) {
-    if (!customerRepository.findById(account.getCustomerId()).has_value()) {
-        return false;
+std::string BankService::generateAccountNumber() {
+    static std::random_device randomDevice;
+    static std::mt19937 generator(randomDevice());
+    static std::uniform_int_distribution<int> digitDistribution(0, 9);
+
+    std::string accountNumber = "PL";
+
+    for (int i = 0; i < 26; i++) {
+        accountNumber += std::to_string(digitDistribution(generator));
     }
-    if (accountRepository.findByAccountNumber(account.getAccountNumber()).has_value()) {
-        return false;
+
+    return accountNumber;
+}
+
+std::vector<Customer> BankService::getAllCustomers() const {
+    return customerRepository.getAllCustomers();
+}
+
+
+std::optional<Account> BankService::createAccount(int customerId, double initialBalance) {
+    if (!customerRepository.findById(customerId).has_value()) {
+        return std::nullopt;
     }
+    if (initialBalance < 0) {
+        return std::nullopt;
+    }
+    std::string accountNumber = generateAccountNumber();
+
+    while (accountRepository.findByAccountNumber(accountNumber).has_value()) {
+        accountNumber = generateAccountNumber();
+    }
+
+    Account account(accountNumber, customerId, initialBalance);
     accountRepository.addAccount(account);
-    return true;
+    
+    return account;
 }
 
 bool BankService::deposit(const std::string& accountNumber, double amount) {
