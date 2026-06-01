@@ -1,7 +1,12 @@
 #include "../../include/repository/CustomerRepository.h"
 
-void CustomerRepository::addCustomer(const Customer& customer) {
+bool CustomerRepository::addCustomer(const Customer& customer) {
+    if (findById(customer.getId()).has_value()) {
+        return false;
+    }
+
     customers.push_back(customer);
+    return true;
 }
 
 std::optional<Customer> CustomerRepository::findById(int id) const {

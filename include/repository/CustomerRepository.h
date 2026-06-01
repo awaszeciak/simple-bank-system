@@ -8,8 +8,9 @@
 class CustomerRepository {
     private:
         std::vector<Customer> customers;
+        
     public:
-        void addCustomer(const Customer& customer);
+        bool addCustomer(const Customer& customer);
 
         std::optional<Customer> findById(int id) const;
 
