@@ -13,15 +13,11 @@ class AccountRepository : public IAccountRepository {
         std::vector<Account> accounts;
 
     public:
-        void addAccount(const Account& account);
-
-        std::optional<Account> findByAccountNumber(const std::string& accountNumber) const;
-
-        std::vector<Account> getAllAccounts() const;
-
-        std::vector<Account> findByOwnerId(int customerId) const;
-
-        bool updateAccount(const Account& updatedAccount);
+        void addAccount(const Account& account) override;
+        std::optional<Account> findByAccountNumber(const std::string& accountNumber) const override;
+        std::vector<Account> getAllAccounts() const override;
+        std::vector<Account> findByOwnerId(int customerId) const override;
+        bool updateAccount(const Account& updatedAccount) override;
 };
 
 

@@ -18,3 +18,13 @@ std::vector<Transaction> TransactionRepository::findByAccountNumber(const std::s
     }
     return result;
 }
+
+std::vector<Transaction> TransactionRepository::findByAccountNumberAndType(const std::string& accountNumber, TransactionType type) const {
+    std::vector<Transaction> result;
+    for (const Transaction& transaction : transactions) {
+        if (transaction.getAccountNumber() == accountNumber && transaction.getType() == type) {
+            result.push_back(transaction);
+        }
+    }
+    return result;
+}

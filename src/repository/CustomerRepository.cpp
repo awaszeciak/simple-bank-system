@@ -21,3 +21,12 @@ std::optional<Customer> CustomerRepository::findById(int id) const {
 std::vector<Customer> CustomerRepository::getAllCustomers() const {
     return customers;
 }
+
+std::optional<Customer> CustomerRepository::findByEmail(const std::string& email) const {
+    for (const Customer& customer : customers) {
+        if (customer.getEmail() == email) {
+            return customer;
+        }
+    }
+    return std::nullopt;
+}

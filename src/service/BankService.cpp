@@ -1,7 +1,7 @@
 #include "../../include/service/BankService.h"
 #include <random>
 
-BankService::BankService(CustomerRepository& customerRepository, AccountRepository& accountRepository, TransactionRepository& transactionRepository)
+BankService::BankService(ICustomerRepository& customerRepository, IAccountRepository& accountRepository, ITransactionRepository& transactionRepository)
     : customerRepository(customerRepository), accountRepository(accountRepository), transactionRepository(transactionRepository), nextTransactionId(1), nextCustomerId(1) {}
 
 Customer BankService::createCustomer(const std::string& firstName, const std::string& lastName, const std::string &email) {
@@ -69,7 +69,7 @@ bool BankService::deposit(const std::string& accountNumber, double amount) {
         return false;
     }
 
-    Transaction transaction(nextTransactionId++, accountNumber, "DEPOSIT", amount, "Money deposited to account");
+    Transaction transaction(nextTransactionId++, accountNumber, TransactionType::Deposit, amount, "Money deposited to account");
     transactionRepository.addTransaction(transaction);
 
     return true;
@@ -93,7 +93,7 @@ bool BankService::withdraw(const std::string& accountNumber, double amount) {
         return false;
     }
 
-    Transaction transaction(nextTransactionId++, accountNumber, "WITHDRAW", amount, "Money withdrawn from account");
+    Transaction transaction(nextTransactionId++, accountNumber, TransactionType::Withdrawal, amount, "Money withdrawn from account");
     transactionRepository.addTransaction(transaction);
 
     return true;
@@ -134,8 +134,8 @@ bool BankService::transfer(const std::string& sourceAccountNumber, const std::st
         return false;
     }
 
-    Transaction outgoingTransaction(nextTransactionId++, sourceAccountNumber, "TRANSFER_OUT", amount, "Money transferred to account " + targetAccountNumber);
-    Transaction incomingTransaction(nextTransactionId++, targetAccountNumber, "TRANSFER_IN", amount, "Money received from account " + sourceAccountNumber);
+    Transaction outgoingTransaction(nextTransactionId++, sourceAccountNumber, TransactionType::TransferOut, amount, "Money transferred to account " + targetAccountNumber);
+    Transaction incomingTransaction(nextTransactionId++, targetAccountNumber, TransactionType::TransferIn, amount, "Money received from account " + sourceAccountNumber);
     
     transactionRepository.addTransaction(outgoingTransaction);
     transactionRepository.addTransaction(incomingTransaction);
@@ -155,5 +155,9 @@ std::optional<Account> BankService::findAccountByNumber(const std::string& accou
 
 std::vector<Transaction> BankService::getTransactionsForAccount(const std::string& accountNumber) const {
     return transactionRepository.findByAccountNumber(accountNumber);
+}
+
+std::vector<Transaction> BankService::getTransactionsForAccountByType(const std::string& accountNumber, TransactionType type) const {
+    return transactionRepository.findByAccountNumberAndType(accountNumber, type);
 }
 

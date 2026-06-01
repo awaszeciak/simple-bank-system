@@ -22,7 +22,7 @@ void ConsoleUI::showMenu() const {
     std::cout << "4. Withdraw money\n";
     std::cout << "5. Transfer money\n";
     std::cout << "6. Show account info\n";
-    std::cout << "7. Show transaction history\n";
+    std::cout << "7. Show transaction history (with filter)\n";
     std::cout << "8. Show all customers\n";
     std::cout << "9. Show all accounts\n";
     std::cout << "0. Exit\n";
@@ -56,7 +56,7 @@ void ConsoleUI::run() {
                 showAccountInfo();
                 break;
             case 7:
-                showTransactionHistory();
+                showFilteredTransactionHistory(); //showtransactionhistory
                 break;
             case 8:
                 showAllCustomers();
@@ -73,7 +73,6 @@ void ConsoleUI::run() {
 
     } while (option != 0);
 }
-
 
 void ConsoleUI::createCustomer() {
     std::string firstName;
@@ -105,7 +104,6 @@ void ConsoleUI::createCustomer() {
     std::cout << "Assigned customer ID: " << customer.getId() << "\n";
 }
 
-
 void ConsoleUI::createAccount() {
     
     int customerId;
@@ -127,7 +125,6 @@ void ConsoleUI::createAccount() {
         std::cout << "Account creation failed. Customer does not exist or initial balance is invalid\n";
     }
 }
-
 
 void ConsoleUI::depositMoney() {
     std::string accountNumber;
@@ -156,7 +153,6 @@ void ConsoleUI::depositMoney() {
     }
 }
 
-
 void ConsoleUI::withdrawMoney() {
     std::string accountNumber;
     double amount;
@@ -183,8 +179,6 @@ void ConsoleUI::withdrawMoney() {
         std::cout << "Withdrawal rejected\n";
     }
 }
-
-
 
 void ConsoleUI::transferMoney() {
     std::string sourceAccountNumber;
@@ -222,7 +216,6 @@ void ConsoleUI::transferMoney() {
     }
 }
 
-
 void ConsoleUI::showAccountInfo() const {
     std::string accountNumber;
 
@@ -244,32 +237,6 @@ void ConsoleUI::showAccountInfo() const {
     std::cout << "\nAccount number: " << account->getAccountNumber() << "\n";
     std::cout << "Customer ID: " << account->getCustomerId() << "\n";
     std::cout << "Balance: " << account->getBalance() << " PLN\n";
-}
-
-
-void ConsoleUI::showTransactionHistory() const {
-    std::string accountNumber;
-
-    std::cout << "Account number: ";
-    std::cin >> accountNumber;
-
-    if (!InputValidator::isValidAccountNumber(accountNumber)) {
-        std::cout << "Invalid account number format\n";
-        return;
-    }
-
-    std::vector<Transaction> transactions = bankService.getTransactionsForAccount(accountNumber);
-
-    if (transactions.empty()) {
-        std::cout << "No transactions found\n";
-        return;
-    }
-
-    std::cout << "\nTransaction history:\n";
-
-    for (const Transaction& transaction : transactions) {
-        std::cout << " - ID: " << transaction.getId() << ", Type: " << transaction.getType() << ", Amount: " << transaction.getAmount() << ", Description: " << transaction.getDescription() << ", Time: " << transaction.getFormattedTimestamp() << "\n";
-    }
 }
 
 void ConsoleUI::showAllCustomers() const {
@@ -309,5 +276,47 @@ void ConsoleUI::showAllAccounts() const {
         }
 
         std::cout << "\n";
+    }
+}
+
+void ConsoleUI::showFilteredTransactionHistory() const {
+    std::string accountNumber;
+    std::cout << "Account number: ";
+    std::cin >> accountNumber;
+
+    if (!InputValidator::isValidAccountNumber(accountNumber)) {
+        std::cout << "Invalid account number format\n";
+        return;
+    }
+
+    std::cout << "Filter by type (DEPOSIT / WITHDRAW / TRANSFER_IN / TRANSFER_OUT / ALL) ";
+    std::string type;
+    std::cin >> type;
+
+    std::vector<Transaction> transactions;
+
+    if (type == "ALL") {
+        transactions = bankService.getTransactionsForAccount(accountNumber);
+    } else if (type == "DEPOSIT") {
+        transactions = bankService.getTransactionsForAccountByType(accountNumber, TransactionType::Deposit);
+    } else if (type == "WITHDRAW") {
+        transactions = bankService.getTransactionsForAccountByType(accountNumber, TransactionType::Withdrawal);
+    } else if (type == "TRANSFER_IN") {
+        transactions = bankService.getTransactionsForAccountByType(accountNumber, TransactionType::TransferIn);
+    } else if (type == "TRANSFER_OUT") {
+        transactions = bankService.getTransactionsForAccountByType(accountNumber, TransactionType::TransferOut);
+    } else {
+        std::cout << "Invalid transaction type.\n";
+        return;
+    }
+
+    if (transactions.empty()) {
+        std::cout << "No transactions fount\n";
+        return;
+    }
+
+    std::cout << "\nTransaction history:\n";
+    for (const Transaction& transaction : transactions) {
+        std::cout << " - ID: " << transaction.getId() << ", Type: " << transaction.getTypeAsString() << ", Amount: " << transaction.getAmount() << ", Description: " << transaction.getDescription() << ", Time: " << transaction.getFormattedTimestamp() << "\n";
     }
 }

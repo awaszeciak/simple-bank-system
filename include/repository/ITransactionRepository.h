@@ -12,6 +12,7 @@ class ITransactionRepository {
         virtual void addTransaction(const Transaction& transaction) = 0;
         virtual std::vector<Transaction> getAllTransactions() const = 0;
         virtual std::vector<Transaction> findByAccountNumber(const std::string& accountNumber) const = 0;
+        virtual std::vector<Transaction> findByAccountNumberAndType(const std::string& accountNumber, TransactionType type) const = 0;
 };
 
 #endif

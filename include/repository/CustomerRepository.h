@@ -11,11 +11,10 @@ class CustomerRepository : public ICustomerRepository {
         std::vector<Customer> customers;
         
     public:
-        bool addCustomer(const Customer& customer);
-
-        std::optional<Customer> findById(int id) const;
-
-        std::vector<Customer> getAllCustomers() const;
+        bool addCustomer(const Customer& customer) override;
+        std::optional<Customer> findById(int id) const override;
+        std::vector<Customer> getAllCustomers() const override;
+        std::optional<Customer> findByEmail(const std::string& email) const override;
 };
 
 #endif

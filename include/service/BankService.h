@@ -7,22 +7,22 @@
 
 #include "../domain/Account.h"
 #include "../domain/Customer.h"
-#include "../repository/AccountRepository.h"
-#include "../repository/CustomerRepository.h"
-#include "../repository/TransactionRepository.h"
+#include "../repository/IAccountRepository.h"
+#include "../repository/ICustomerRepository.h"
+#include "../repository/ITransactionRepository.h"
 
 class BankService {
     private:
-        CustomerRepository& customerRepository;
-        AccountRepository& accountRepository;
-        TransactionRepository& transactionRepository;
+        ICustomerRepository& customerRepository;
+        IAccountRepository& accountRepository;
+        ITransactionRepository& transactionRepository;
         int nextTransactionId;
         int nextCustomerId;
 
         std::string generateAccountNumber();
 
     public:
-        BankService(CustomerRepository& customerRepository, AccountRepository& accountRepository, TransactionRepository& transactionRepository);
+        BankService(ICustomerRepository& customerRepository, IAccountRepository& accountRepository, ITransactionRepository& transactionRepository);
 
         Customer createCustomer(const std::string& firstName, const std::string& lastName, const std::string& email);
         std::optional<Account> createAccount(int customerId, double initialBalance);
@@ -39,6 +39,7 @@ class BankService {
 
         std::vector<Customer> getAllCustomers() const;
         std::vector<Account> getAllAccounts() const;
+        std::vector<Transaction> getTransactionsForAccountByType(const std::string& accountNumber, TransactionType type) const;
 };
 
 #endif
