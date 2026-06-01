@@ -1,13 +1,15 @@
-#include "../../include/ui/ConsoleUI.h"
-
 #include <iostream>
 #include <optional>
 #include <string>
 #include <vector>
 
+#include "../../include/ui/ConsoleUI.h"
+
 #include "../../include/domain/Customer.h"
 #include "../../include/domain/Account.h"
 #include "../../include/domain/Transaction.h"
+
+#include "../../include/utils/InputValidator.h"
 
 ConsoleUI::ConsoleUI(BankService& bankService) 
     : bankService(bankService) {}
@@ -22,6 +24,7 @@ void ConsoleUI::showMenu() const {
     std::cout << "6. Show account info\n";
     std::cout << "7. Show transaction history\n";
     std::cout << "8. Show all customers\n";
+    std::cout << "9. Show all accounts\n";
     std::cout << "0. Exit\n";
     std::cout << "Choose option: ";
 }
@@ -58,6 +61,9 @@ void ConsoleUI::run() {
             case 8:
                 showAllCustomers();
                 break;
+            case 9:
+                showAllAccounts();
+                break;
             case 0:
                 std::cout << "Exiting application\n";
                 break;
@@ -82,6 +88,16 @@ void ConsoleUI::createCustomer() {
 
     std::cout << "Email: ";
     std::cin >> email;
+
+    if (firstName.empty() || lastName.empty()) {
+        std::cout << "First name and last name cannot be empty\n";
+        return;
+    }
+
+    if (!InputValidator::isValidEmail(email)) {
+        std::cout << "Invalid email address\n";
+        return;
+    }
 
     Customer customer = bankService.createCustomer(firstName, lastName, email);
 
@@ -123,6 +139,16 @@ void ConsoleUI::depositMoney() {
     std::cout << "Amount: ";
     std::cin >> amount;
 
+    if (!InputValidator::isValidAccountNumber(accountNumber)) {
+        std::cout << "Invalid account number format\n";
+        return;
+    }
+
+    if (!InputValidator::isPositiveAmount(amount)) {
+        std::cout << "Amount must be greater than 0\n";
+        return;
+    }
+
     if (bankService.deposit(accountNumber, amount)) {
         std::cout << "Deposit completed successfully\n";
     } else {
@@ -140,6 +166,16 @@ void ConsoleUI::withdrawMoney() {
 
     std::cout << "Amount: ";
     std::cin >> amount;
+
+    if (!InputValidator::isValidAccountNumber(accountNumber)) {
+        std::cout << "Invalid account number format\n";
+        return;
+    }
+
+    if (!InputValidator::isPositiveAmount(amount)) {
+        std::cout << "Amount must be greater than 0\n";
+        return;
+    }
 
     if (bankService.withdraw(accountNumber, amount)) {
         std::cout << "Withdrawal completed successfully\n";
@@ -164,6 +200,21 @@ void ConsoleUI::transferMoney() {
     std::cout << "Amount: ";
     std::cin >> amount;
 
+    if (!InputValidator::isValidAccountNumber(sourceAccountNumber)) {
+        std::cout << "Invalid source account number format\n";
+        return;
+    }
+
+    if (!InputValidator::isValidAccountNumber(targetAccountNumber)) {
+        std::cout << "Invalid target account number format\n";
+        return;
+    }
+
+    if (!InputValidator::isPositiveAmount(amount)) {
+        std::cout << "Amount must be greater than 0\n";
+        return;
+    }
+
     if (bankService.transfer(sourceAccountNumber, targetAccountNumber, amount)) {
         std::cout << "Transfer completed successfully\n";
     } else {
@@ -177,6 +228,11 @@ void ConsoleUI::showAccountInfo() const {
 
     std::cout << "Account number: ";
     std::cin >> accountNumber;
+
+    if (!InputValidator::isValidAccountNumber(accountNumber)) {
+        std::cout << "Invalid account number format\n";
+        return;
+    }
 
     std::optional<Account> account = bankService.findAccountByNumber(accountNumber);
 
@@ -196,6 +252,11 @@ void ConsoleUI::showTransactionHistory() const {
 
     std::cout << "Account number: ";
     std::cin >> accountNumber;
+
+    if (!InputValidator::isValidAccountNumber(accountNumber)) {
+        std::cout << "Invalid account number format\n";
+        return;
+    }
 
     std::vector<Transaction> transactions = bankService.getTransactionsForAccount(accountNumber);
 
@@ -223,5 +284,30 @@ void ConsoleUI::showAllCustomers() const {
 
     for (const Customer& customer: customers) {
         std::cout << " - ID: " << customer.getId() << ", Name: " << customer.getFullName() << ", Email: " << customer.getEmail() << "\n";
+    }
+}
+
+void ConsoleUI::showAllAccounts() const {
+    std::vector<Account> accounts = bankService.getAllAccounts();
+
+    if (accounts.empty()) {
+        std::cout << "No accounts found\n";
+        return;
+    }
+
+    std::cout << "\nAccounts:\n";
+
+    for (const Account& account : accounts) {
+        std::optional<Customer> owner = bankService.findCustomerById(account.getCustomerId());
+
+        std::cout << " - Account number: " << account.getAccountNumber() << ", Balance: " << account.getBalance() << " PLN";
+
+        if (owner.has_value()) {
+            std::cout << ", Owner: " << owner->getFullName();
+        } else {
+            std::cout << ", Owner ID: " << account.getCustomerId();
+        }
+
+        std::cout << "\n";
     }
 }

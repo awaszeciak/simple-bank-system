@@ -38,6 +38,7 @@ class BankService {
         bool transfer(const std::string& sourceAccountNumber, const std::string& targetAccountNumber, double amount);
 
         std::vector<Customer> getAllCustomers() const;
+        std::vector<Account> getAllAccounts() const;
 };
 
 #endif

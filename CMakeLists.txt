@@ -21,4 +21,6 @@ add_executable(SimpleBankSystem
     src/service/BankService.cpp
 
     src/ui/ConsoleUI.cpp
+
+    src/utils/InputValidator.cpp
 )

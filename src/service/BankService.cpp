@@ -29,6 +29,9 @@ std::vector<Customer> BankService::getAllCustomers() const {
     return customerRepository.getAllCustomers();
 }
 
+std::vector<Account> BankService::getAllAccounts() const {
+    return accountRepository.getAllAccounts();
+}
 
 std::optional<Account> BankService::createAccount(int customerId, double initialBalance) {
     if (!customerRepository.findById(customerId).has_value()) {
@@ -153,3 +156,4 @@ std::optional<Account> BankService::findAccountByNumber(const std::string& accou
 std::vector<Transaction> BankService::getTransactionsForAccount(const std::string& accountNumber) const {
     return transactionRepository.findByAccountNumber(accountNumber);
 }
+
