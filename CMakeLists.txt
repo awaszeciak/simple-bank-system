@@ -24,3 +24,17 @@ add_executable(SimpleBankSystem
 
     src/utils/InputValidator.cpp
 )
+
+add_executable(BankServiceTests
+    tests/BankServiceTests.cpp
+
+    src/domain/Account.cpp
+    src/domain/Customer.cpp
+    src/domain/Transaction.cpp
+
+    src/repository/AccountRepository.cpp
+    src/repository/CustomerRepository.cpp
+    src/repository/TransactionRepository.cpp
+    src/service/BankService.cpp
+    src/utils/InputValidator.cpp
+)
