@@ -268,7 +268,7 @@ void ConsoleUI::showTransactionHistory() const {
     std::cout << "\nTransaction history:\n";
 
     for (const Transaction& transaction : transactions) {
-        std::cout << " - ID: " << transaction.getId() << ", Type: " << transaction.getType() << ", Amount: " << transaction.getAmount() << ", Description: " << transaction.getDescription() << "\n";
+        std::cout << " - ID: " << transaction.getId() << ", Type: " << transaction.getType() << ", Amount: " << transaction.getAmount() << ", Description: " << transaction.getDescription() << ", Time: " << transaction.getFormattedTimestamp() << "\n";
     }
 }
 

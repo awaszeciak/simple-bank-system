@@ -1,6 +1,7 @@
 #ifndef TRANSACTION_H
 #define TRANSACTION_H
 
+#include <chrono>
 #include <string>
 
 class Transaction {
@@ -10,6 +11,8 @@ class Transaction {
         std::string type;
         double amount;
         std::string description;
+        std::chrono::system_clock::time_point timestamp;
+
     public:
         Transaction(int id, const std::string& accountNumber, const std::string& type, double amount, const std::string& description);
 
@@ -18,6 +21,8 @@ class Transaction {
         std::string getType() const;
         double getAmount() const;
         std::string getDescription() const;
+        std::chrono::system_clock::time_point getTimestamp() const;
+        std::string getFormattedTimestamp() const;
 
 };
 

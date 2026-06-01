@@ -4,8 +4,9 @@
 #include <vector>
 #include <optional>
 #include "../domain/Customer.h"
+#include "ICustomerRepository.h"
 
-class CustomerRepository {
+class CustomerRepository : public ICustomerRepository {
     private:
         std::vector<Customer> customers;
         

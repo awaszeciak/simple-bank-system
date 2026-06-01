@@ -6,8 +6,9 @@
 #include <string>
 
 #include "../domain/Account.h"
+#include "IAccountRepository.h"
 
-class AccountRepository {
+class AccountRepository : public IAccountRepository {
     private:
         std::vector<Account> accounts;
 

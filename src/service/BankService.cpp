@@ -122,7 +122,7 @@ bool BankService::transfer(const std::string& sourceAccountNumber, const std::st
         return false;
     }
 
-    if (!updatedTargetAccount.withdraw(amount)) {
+    if (!updatedTargetAccount.deposit(amount)) {
         return false;
     }
 
