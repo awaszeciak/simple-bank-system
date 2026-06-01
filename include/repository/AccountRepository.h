@@ -19,6 +19,8 @@ class AccountRepository {
         std::vector<Account> getAllAccounts() const;
 
         std::vector<Account> findByOwnerId(int customerId) const;
+
+        bool updateAccount(const Account& updatedAccount);
 };
 
 

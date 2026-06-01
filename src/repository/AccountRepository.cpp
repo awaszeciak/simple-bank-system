@@ -27,3 +27,13 @@ std::vector<Account> AccountRepository::findByOwnerId(int customerId) const {
     }
     return result;
 }
+
+bool AccountRepository::updateAccount(const Account& updatedAccount) {
+    for (Account& account : accounts) {
+        if (account.getAccountNumber() == updatedAccount.getAccountNumber()) {
+            account = updatedAccount;
+            return true;
+        }
+    }
+    return false;
+}
