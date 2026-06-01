@@ -1,9 +1,11 @@
 #include <iostream>
 #include "../include/domain/Customer.h"
 #include "../include/domain/Account.h"
+#include "../include/domain/Transaction.h"
 
 #include "../include/repository/CustomerRepository.h"
 #include "../include/repository/AccountRepository.h"
+#include "../include/repository/TransactionRepository.h"
 
 #include "../include/service/BankService.h"
 
@@ -11,8 +13,9 @@ int main() {
     
     CustomerRepository customerRepository;
     AccountRepository accountRepository;
+    TransactionRepository transactionRepository;
 
-    BankService bankService(customerRepository, accountRepository);
+    BankService bankService(customerRepository, accountRepository, transactionRepository);
 
     Customer customer1(1, "Anna", "Nowak", "annanowak@example.com");
     Customer customer2(2, "Jan", "Kowalski", "jankowalski@example.com");
@@ -101,6 +104,18 @@ int main() {
     }
     else {
         std::cout << "Account not found." << std::endl;
+    }
+
+    std::cout << "\nTransaction history for account:" << std::endl;
+
+    std::vector<Transaction> transactions = bankService.getTransactionsForAccount("PL61109010140000071219812874");
+
+    if (transactions.empty()) {
+        std::cout << "No transactions found" << std::endl;
+    } else {
+        for (const Transaction& transaction : transactions) {
+            std::cout << "ID: " << transaction.getId() << ", Type: " << transaction.getType() << ", Amount: " << transaction.getAmount() << " PLN" << ", Description: " << transaction.getDescription() << std::endl;
+        }
     }
 
     return 0;

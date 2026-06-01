@@ -16,6 +16,7 @@ add_executable(SimpleBankSystem
 
     src/repository/AccountRepository.cpp
     src/repository/CustomerRepository.cpp
+    src/repository/TransactionRepository.cpp
 
     src/service/BankService.cpp
 
