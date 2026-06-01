@@ -61,6 +61,10 @@ std::optional<Account> BankService::createAccount(int customerId, double initial
 }
 
 bool BankService::deposit(const std::string& accountNumber, double amount) {
+    if (amount <= 0) {
+        throw std::invalid_argument("Deposit amount must be positive");
+    }
+
     std::optional<Account> account = accountRepository.findByAccountNumber(accountNumber);
 
     if (!account.has_value()) {
@@ -85,6 +89,10 @@ bool BankService::deposit(const std::string& accountNumber, double amount) {
 
 
 bool BankService::withdraw(const std::string& accountNumber, double amount) {
+    if (amount <= 0) {
+        throw std::invalid_argument("Withdraw amount must be positive");
+    }
+    
     std::optional<Account> account = accountRepository.findByAccountNumber(accountNumber);
 
     if (!account.has_value()) {
@@ -109,7 +117,7 @@ bool BankService::withdraw(const std::string& accountNumber, double amount) {
 
 bool BankService::transfer(const std::string& sourceAccountNumber, const std::string& targetAccountNumber, double amount) {
     if (amount <= 0) {
-        return false;
+        throw std::invalid_argument("Transfer amount must be positive");
     }
 
     if (sourceAccountNumber == targetAccountNumber) {

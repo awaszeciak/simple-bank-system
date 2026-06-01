@@ -154,6 +154,27 @@ void testTransactionHistory() {
     assert(transactions.size() == 2);
 }
 
+void testDepositNegativeAmount() {
+    CustomerRepository customerRepository;
+    AccountRepository accountRepository;
+    TransactionRepository transactionRepository;
+
+    BankService bankService(customerRepository, accountRepository, transactionRepository);
+
+    Customer customer = bankService.createCustomer("Jan", "Kowalski", "jankowalski@example.com"); 
+    auto account = bankService.createAccount(customer.getId(), 100.0);
+
+    bool exceptionThrown = false;
+
+    try {
+        bankService.deposit(account->getAccountNumber(), -50.0);
+    } catch (const std::invalid_argument&) {
+        exceptionThrown = true;
+    }
+
+    assert(exceptionThrown);
+}
+
 
 int main() {
     testCreateAccount();
@@ -164,6 +185,7 @@ int main() {
     testDuplicateEmail();
     testTransfer();
     testTransactionHistory();
+    testDepositNegativeAmount();
 
     std::cout << "All BankService tests passed.\n";
 
