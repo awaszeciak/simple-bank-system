@@ -243,6 +243,25 @@ You can also run the test executable directly:
 ```
 
 ---
+## Documentation
+
+The project includes a Doxygen configuration file.
+
+To generate HTML documentation, run:
+
+```bash
+doxygen Doxyfile
+```
+
+The generated HTML documentation will be available in:
+
+```text
+docs/html/index.html
+```
+
+Generated documentation files are not stored in the repository.
+
+---
 
 ## Example Use Case
 
