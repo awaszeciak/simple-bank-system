@@ -87,7 +87,11 @@ void testWithdrawTooMuchMoney() {
 
     bool result = bankService.withdraw(account->getAccountNumber(), 200.0);
 
+    std::optional<Account> updatedAccount = bankService.findAccountByNumber(account->getAccountNumber());
+
     assert(result == false);
+    assert(updatedAccount.has_value());
+    assert(updatedAccount->getBalance() == 100.0);
 }
 
 void testDuplicateEmail() {
@@ -175,6 +179,52 @@ void testDepositNegativeAmount() {
     assert(exceptionThrown);
 }
 
+void testTransferNotEnoughMoney() {
+    CustomerRepository customerRepository;
+    AccountRepository accountRepository;
+    TransactionRepository transactionRepository;
+
+    BankService bankService(customerRepository, accountRepository, transactionRepository);
+
+    Customer c1 = bankService.createCustomer("Jan", "Kowalski", "jankowalski@example.com");
+    Customer c2 = bankService.createCustomer("Adam", "Nowak", "adamnowak@example.com");
+
+    auto a1 = bankService.createAccount(c1.getId(), 100.0);
+    auto a2 = bankService.createAccount(c2.getId(), 50.0);
+
+    bool result = bankService.transfer(a1->getAccountNumber(), a2->getAccountNumber(), 300.0);
+
+    auto updatedA1 = bankService.findAccountByNumber(a1->getAccountNumber());
+    auto updatedA2 = bankService.findAccountByNumber(a2->getAccountNumber());
+
+    assert(result == false);
+    assert(updatedA1.has_value());
+    assert(updatedA2.has_value());
+
+    assert(updatedA1->getBalance() == 100.0);
+    assert(updatedA2->getBalance() == 50.0);
+}
+
+void testTransferToSameAccount() {
+    CustomerRepository customerRepository;
+    AccountRepository accountRepository;
+    TransactionRepository transactionRepository;
+
+    BankService bankService(customerRepository, accountRepository, transactionRepository);
+
+    Customer customer = bankService.createCustomer("Jan", "Kowalski", "jankowalski@example.com");
+  
+    auto account = bankService.createAccount(customer.getId(), 100.0);
+
+    bool result = bankService.transfer(account->getAccountNumber(), account->getAccountNumber(), 100.0);
+
+    auto updatedAccount = bankService.findAccountByNumber(account->getAccountNumber());
+
+    assert(result == false);
+    assert(updatedAccount.has_value());
+    assert(updatedAccount->getBalance() == 100.0);
+
+}
 
 int main() {
     testCreateAccount();
@@ -186,6 +236,8 @@ int main() {
     testTransfer();
     testTransactionHistory();
     testDepositNegativeAmount();
+    testTransferNotEnoughMoney();
+    testTransferToSameAccount();
 
     std::cout << "All BankService tests passed.\n";
 

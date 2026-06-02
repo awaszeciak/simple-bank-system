@@ -316,7 +316,7 @@ void ConsoleUI::showFilteredTransactionHistory() const {
     }
 
     if (transactions.empty()) {
-        std::cout << "No transactions fount\n";
+        std::cout << "No transactions found\n";
         return;
     }
 
