@@ -36,13 +36,18 @@ class MainWindow : public QMainWindow {
         QComboBox *accountComboBox;
         QLineEdit *operationAmountInput;
 
+        QComboBox *sourceAccountComboBox;
+        QComboBox *targetAccountComboBox;
+        QLineEdit *transferAmountInput;
+
         void createAccount();
         void createCustomer();
         void deposit();
         void withdraw();
+        void transfer();
 
-        void updateSelectedAccountInComboBox(const Account& account);
-        void addAccountToComboBox(const Account& account);
+        void addAccountToAllComboBoxes(const Account& account);
+        void updateAccountInAllComboBoxes(const Account& account);
 };
 
 #endif
