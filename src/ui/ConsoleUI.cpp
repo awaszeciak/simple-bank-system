@@ -117,8 +117,7 @@ void ConsoleUI::createAccount() {
     std::cout << "Customer ID: ";
     std::cin >> customerId;
 
-    std::cout << "Initial balance: ";
-    std::cin >> initialBalance;
+    initialBalance = InputValidator::readPositiveNumber("Initial balance: ");
 
     std::optional<Account> account = bankService.createAccount(customerId, initialBalance);
 
@@ -133,13 +132,12 @@ void ConsoleUI::createAccount() {
 
 void ConsoleUI::depositMoney() {
     std::string accountNumber;
-    double amount;
+
 
     std::cout << "Account number: ";
     std::cin >> accountNumber;
-
-    std::cout << "Amount: ";
-    std::cin >> amount;
+    
+    double amount = InputValidator::readPositiveNumber("Amount: ");
 
     if (!InputValidator::isValidAccountNumber(accountNumber)) {
         std::cout << "Invalid account number format\n";
@@ -160,13 +158,12 @@ void ConsoleUI::depositMoney() {
 
 void ConsoleUI::withdrawMoney() {
     std::string accountNumber;
-    double amount;
+
 
     std::cout << "Account number: ";
     std::cin >> accountNumber;
 
-    std::cout << "Amount: ";
-    std::cin >> amount;
+    double amount = InputValidator::readPositiveNumber("Amount: ");
 
     if (!InputValidator::isValidAccountNumber(accountNumber)) {
         std::cout << "Invalid account number format\n";
@@ -188,7 +185,7 @@ void ConsoleUI::withdrawMoney() {
 void ConsoleUI::transferMoney() {
     std::string sourceAccountNumber;
     std::string targetAccountNumber;
-    double amount;
+
 
     std::cout << "Source account number: ";
     std::cin >> sourceAccountNumber;
@@ -196,8 +193,7 @@ void ConsoleUI::transferMoney() {
     std::cout << "Target account number: ";
     std::cin >> targetAccountNumber;
 
-    std::cout << "Amount: ";
-    std::cin >> amount;
+    double amount = InputValidator::readPositiveNumber("Amount: ");
 
     if (!InputValidator::isValidAccountNumber(sourceAccountNumber)) {
         std::cout << "Invalid source account number format\n";

@@ -1,6 +1,8 @@
 #include "../../include/utils/InputValidator.h"
 
 #include <cctype>
+#include <iostream>
+#include <string>
 
 bool InputValidator::isValidAccountNumber(const std::string& accountNumber) {
     if (accountNumber.length() != 28) {
@@ -26,3 +28,27 @@ bool InputValidator::isPositiveAmount(double amount) {
 bool InputValidator::isValidEmail(const std::string& email) {
     return !email.empty() && email.find('@') != std::string::npos;
 }
+
+double InputValidator::readPositiveNumber(const std::string &prompt) {
+    std::string input;
+
+    while (true) {
+        std::cout << prompt;
+        std::cin >> input;
+
+        try {
+            double amount = std::stod(input);
+
+            if (amount > 0) {
+                return amount;
+            }
+
+            std::cout << "Invalid value. Please enter a positive number.\n";
+        } catch (const std::invalid_argument&) {
+            std::cout << "Invalid value. Please enter a positive number.\n";
+        } catch (const std::out_of_range&) {
+            std::cout << "Invalid value. Please enter a positive number.\n";
+        }
+    }
+}
+
