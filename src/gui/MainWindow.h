@@ -26,15 +26,23 @@ class MainWindow : public QMainWindow {
         QLineEdit *firstNameInput;
         QLineEdit *lastNameInput;
         QLineEdit *emailInput;
-        
+
         QTextEdit *outputArea;
         QLabel *statusLabel;
 
         QLineEdit *initialBalanceInput;
         QComboBox *customerComboBox;
 
+        QComboBox *accountComboBox;
+        QLineEdit *operationAmountInput;
+
         void createAccount();
         void createCustomer();
+        void deposit();
+        void withdraw();
+
+        void updateSelectedAccountInComboBox(const Account& account);
+        void addAccountToComboBox(const Account& account);
 };
 
 #endif
