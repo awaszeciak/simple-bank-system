@@ -3,6 +3,7 @@
 #include <cctype>
 #include <iostream>
 #include <string>
+#include <stdexcept>
 
 bool InputValidator::isValidAccountNumber(const std::string& accountNumber) {
     if (accountNumber.length() != 28) {
@@ -29,7 +30,7 @@ bool InputValidator::isValidEmail(const std::string& email) {
     return !email.empty() && email.find('@') != std::string::npos;
 }
 
-double InputValidator::readPositiveNumber(const std::string &prompt) {
+double InputValidator::readNonNegativeNumber(const std::string &prompt) {
     std::string input;
 
     while (true) {
@@ -37,9 +38,10 @@ double InputValidator::readPositiveNumber(const std::string &prompt) {
         std::cin >> input;
 
         try {
-            double amount = std::stod(input);
+            size_t position;
+            double amount = std::stod(input, &position);
 
-            if (amount > 0) {
+            if (position == input.length() && amount >= 0) {
                 return amount;
             }
 
@@ -52,3 +54,26 @@ double InputValidator::readPositiveNumber(const std::string &prompt) {
     }
 }
 
+std::string InputValidator::readTextWithoutDigits(const std::string &prompt) {
+    std::string input;
+
+    while (true) {
+        std::cout << prompt;
+        std::cin >> input;
+
+        bool hasDigit = false;
+
+        for (char ch : input) {
+            if (std::isdigit(static_cast<unsigned char>(ch))) {
+                hasDigit = true;
+                break;
+            }
+        }
+
+        if (!input.empty() && !hasDigit) {
+            return input;
+        }
+
+        std::cout << "Invalid input. Text cannot contain digits.\n";
+    }
+}

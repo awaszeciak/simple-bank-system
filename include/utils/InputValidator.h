@@ -8,7 +8,8 @@ class InputValidator {
         static bool isValidAccountNumber(const std::string& accountNumber);
         static bool isPositiveAmount(double amount);
         static bool isValidEmail(const std::string& email);
-        static double readPositiveNumber(const std::string &prompt);
+        static double readNonNegativeNumber(const std::string &prompt);
+        static std::string readTextWithoutDigits(const std::string &prompt);
 };
 
 #endif

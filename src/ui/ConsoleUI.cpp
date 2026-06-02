@@ -75,23 +75,13 @@ void ConsoleUI::run() {
 }
 
 void ConsoleUI::createCustomer() {
-    std::string firstName;
-    std::string lastName;
     std::string email;
 
-    std::cout << "First name: ";
-    std::cin >> firstName;
-
-    std::cout << "Last name: ";
-    std::cin >> lastName;
+    std::string firstName = InputValidator::readTextWithoutDigits("First name: ");
+    std::string lastName = InputValidator::readTextWithoutDigits("Last name: ");
 
     std::cout << "Email: ";
     std::cin >> email;
-
-    if (firstName.empty() || lastName.empty()) {
-        std::cout << "First name and last name cannot be empty\n";
-        return;
-    }
 
     if (!InputValidator::isValidEmail(email)) {
         std::cout << "Invalid email address\n";
@@ -114,10 +104,9 @@ void ConsoleUI::createAccount() {
     int customerId;
     double initialBalance;
 
-    std::cout << "Customer ID: ";
-    std::cin >> customerId;
+    customerId = InputValidator::readNonNegativeNumber("Customer ID: ");
 
-    initialBalance = InputValidator::readPositiveNumber("Initial balance: ");
+    initialBalance = InputValidator::readNonNegativeNumber("Initial balance: ");
 
     std::optional<Account> account = bankService.createAccount(customerId, initialBalance);
 
@@ -137,7 +126,7 @@ void ConsoleUI::depositMoney() {
     std::cout << "Account number: ";
     std::cin >> accountNumber;
     
-    double amount = InputValidator::readPositiveNumber("Amount: ");
+    double amount = InputValidator::readNonNegativeNumber("Amount: ");
 
     if (!InputValidator::isValidAccountNumber(accountNumber)) {
         std::cout << "Invalid account number format\n";
@@ -163,7 +152,7 @@ void ConsoleUI::withdrawMoney() {
     std::cout << "Account number: ";
     std::cin >> accountNumber;
 
-    double amount = InputValidator::readPositiveNumber("Amount: ");
+    double amount = InputValidator::readNonNegativeNumber("Amount: ");
 
     if (!InputValidator::isValidAccountNumber(accountNumber)) {
         std::cout << "Invalid account number format\n";
@@ -193,7 +182,7 @@ void ConsoleUI::transferMoney() {
     std::cout << "Target account number: ";
     std::cin >> targetAccountNumber;
 
-    double amount = InputValidator::readPositiveNumber("Amount: ");
+    double amount = InputValidator::readNonNegativeNumber("Amount: ");
 
     if (!InputValidator::isValidAccountNumber(sourceAccountNumber)) {
         std::cout << "Invalid source account number format\n";
