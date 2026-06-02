@@ -14,6 +14,10 @@ so the same service and repository layers can be reused by both the console appl
 ---
 
 ## Screenshots
+![Console menu](screenshots/console-menu.jpg)
+![GUI main window](screenshots/gui-main-window.jpg)
+![Customer and account creation](screenshots/customer-account-creation.jpg)
+![Account operations](screenshots/account-operations.jpg)
 
 
 
