@@ -11,6 +11,7 @@
 class QLabel;
 class QLineEdit;
 class QTextEdit;
+class QComboBox;
 
 class MainWindow : public QMainWindow {
     public:
@@ -25,9 +26,14 @@ class MainWindow : public QMainWindow {
         QLineEdit *firstNameInput;
         QLineEdit *lastNameInput;
         QLineEdit *emailInput;
+        
         QTextEdit *outputArea;
         QLabel *statusLabel;
 
+        QLineEdit *initialBalanceInput;
+        QComboBox *customerComboBox;
+
+        void createAccount();
         void createCustomer();
 };
 
