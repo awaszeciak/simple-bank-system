@@ -38,3 +38,10 @@ add_executable(BankServiceTests
     src/service/BankService.cpp
     src/utils/InputValidator.cpp
 )
+
+enable_testing()
+
+add_test(
+    NAME BankServiceTests
+    COMMAND BankServiceTests
+)
